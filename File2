@@ -1,0 +1,6 @@
+name: MajithiyanPowers
+version: 1.0
+main: com.prop.abilities.MajithiyanPowers
+api-version: 1.19
+author: PropGamer
+description: Majithiyan Style Powers Plugin with Fireball, Lightning, Speed, Jump and Shield.
