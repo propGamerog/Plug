@@ -1,0 +1,70 @@
+package com.prop.abilities;
+
+import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LightningStrike;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class MajithiyanPowers extends JavaPlugin implements Listener {
+
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(this, this);
+        getLogger().info("Majithiyan Powers Enabled!");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("Majithiyan Powers Disabled!");
+    }
+
+    @EventHandler
+    public void onUse(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+
+        if (p.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
+            if (p.isSneaking()) {
+                // Sneak + Right Click = Lightning Strike
+                LightningStrike strike = p.getWorld().strikeLightning(p.getTargetBlock(null, 30).getLocation());
+                chakraEffect(p);
+                p.sendMessage("⚡ Lightning Power Unleashed!");
+            } else {
+                // Normal Right Click = Fireball
+                Fireball fireball = p.launchProjectile(Fireball.class);
+                fireball.setYield(2);
+                chakraEffect(p);
+                p.sendMessage("🔥 Fireball Ability Activated!");
+            }
+        }
+
+        if (p.getInventory().getItemInMainHand().getType() == Material.NETHER_STAR) {
+            // Nether Star = Buff Abilities
+            chakraEffect(p);
+            p.sendMessage("💨 Speed & Jump Boost Activated!");
+            p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.SPEED, 200, 2));
+            p.addPotionEffect(new org.bukkit.potion.PotionEffect(org.bukkit.potion.PotionEffectType.JUMP, 200, 2));
+        }
+
+        if (p.getInventory().getItemInMainHand().getType() == Material.SHIELD) {
+            // Shield = Aura
+            chakraEffect(p);
+            p.sendMessage("🛡 Shield Aura Activated!");
+            double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue();
+            p.setHealth(Math.min(maxHealth, p.getHealth() + 6.0)); // heal
+        }
+    }
+
+    private void chakraEffect(Player p) {
+        p.getWorld().spawnParticle(
+                Particle.REDSTONE,
+                p.getLocation().add(0, 1, 0),
+                50, 0.5, 1, 0.5,
+                new Particle.DustOptions(Color.fromRGB(0, 200, 255), 2)
+        );
+    }
+}
